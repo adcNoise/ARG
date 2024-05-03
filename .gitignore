@@ -1,6 +1,14 @@
 \ARG\MDK-ARM\
+
+MDK-ARM\arg_power_G0_1\arg_power_G0_1.htm
+MDK-ARM\arg_power_G0_1\arg_power_G0_1.lnp
+MDK-ARM\arg_power_G0_1\arg_power_G0_1.map
+MDK-ARM\arg_power_G0_1\arg_power_G0_1.sct
+MDK-ARM\arg_power_G0_1\arg_power_G0_1_arg_power_G0_1.dep
+
 *.build_log.htm
 *.o
 *.d
+*.__i
 
 
