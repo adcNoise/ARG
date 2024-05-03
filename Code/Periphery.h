@@ -5,33 +5,33 @@
 #include "max31865.h"
 
 typedef enum {
-	READY	= 0,			// Статус-пин замкнут, система готова
-	ALARM					// Статус-пин разомкнут, система не готова, требуется аппаратный сброс 
+	READY	= 0,			// РЎС‚Р°С‚СѓСЃ-РїРёРЅ Р·Р°РјРєРЅСѓС‚, СЃРёСЃС‚РµРјР° РіРѕС‚РѕРІР°
+	ALARM					// РЎС‚Р°С‚СѓСЃ-РїРёРЅ СЂР°Р·РѕРјРєРЅСѓС‚, СЃРёСЃС‚РµРјР° РЅРµ РіРѕС‚РѕРІР°, С‚СЂРµР±СѓРµС‚СЃСЏ Р°РїРїР°СЂР°С‚РЅС‹Р№ СЃР±СЂРѕСЃ 
 } ALARM_PIN_STATUS;
 
 typedef enum {
-	SYNC_AC_NO = 0,			// Пин синхронизации синуса по переменке не установлен
-	SYNC_AC_YES				// Пин синхронизации синуса по переменке    установлен
+	SYNC_AC_NO = 0,			// РџРёРЅ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё СЃРёРЅСѓСЃР° РїРѕ РїРµСЂРµРјРµРЅРєРµ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ
+	SYNC_AC_YES				// РџРёРЅ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё СЃРёРЅСѓСЃР° РїРѕ РїРµСЂРµРјРµРЅРєРµ    СѓСЃС‚Р°РЅРѕРІР»РµРЅ
 } AC_SYNC_STATUS;
 
 typedef enum {
-	MANUAL_STOP	= 0,		// Пин ручного пуска разомкнут
-	MANUAL_START			// Пин ручного пуска замкнут
+	MANUAL_STOP	= 0,		// РџРёРЅ СЂСѓС‡РЅРѕРіРѕ РїСѓСЃРєР° СЂР°Р·РѕРјРєРЅСѓС‚
+	MANUAL_START			// РџРёРЅ СЂСѓС‡РЅРѕРіРѕ РїСѓСЃРєР° Р·Р°РјРєРЅСѓС‚
 } MANUAL_PIN_STATUS;
 
 typedef enum {
-	PHOTO_NO_SENSOR = 0,	// Нет 	датчика
-	PHOTO_FIRE,				// Есть огонь
-	PHOTO_NO_FIRE			// Нет 	огня
+	PHOTO_NO_SENSOR = 0,	// РќРµС‚ 	РґР°С‚С‡РёРєР°
+	PHOTO_FIRE,				// Р•СЃС‚СЊ РѕРіРѕРЅСЊ
+	PHOTO_NO_FIRE			// РќРµС‚ 	РѕРіРЅСЏ
 } PHOTO_STATUS;
 
 typedef enum {
-	OIL_LEVEL_UP = 0,		// Датчик вверху
-	OIL_LEVEL_DOWN,			// Датчик внизу
+	OIL_LEVEL_UP = 0,		// Р”Р°С‚С‡РёРє РІРІРµСЂС…Сѓ
+	OIL_LEVEL_DOWN,			// Р”Р°С‚С‡РёРє РІРЅРёР·Сѓ
 } OIL_LEVEL_STATUS;
 
-typedef enum {				// Перемычки установки целевой температуры масла в бачке. Измеряется 1 раз при старте..
-	OIL_TEMP_NONE = 0,		// Все разомкнуты
+typedef enum {				// РџРµСЂРµРјС‹С‡РєРё СѓСЃС‚Р°РЅРѕРІРєРё С†РµР»РµРІРѕР№ С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РјР°СЃР»Р° РІ Р±Р°С‡РєРµ. РР·РјРµСЂСЏРµС‚СЃСЏ 1 СЂР°Р· РїСЂРё СЃС‚Р°СЂС‚Рµ..
+	OIL_TEMP_NONE = 0,		// Р’СЃРµ СЂР°Р·РѕРјРєРЅСѓС‚С‹
 	OIL_TEMP_A,				// A
 	OIL_TEMP_B,				// B
 	OIL_TEMP_AB,			// AB
@@ -42,20 +42,20 @@ typedef enum {				// Перемычки установки целевой температуры масла в бачке. Изме
 } OIL_TEMP_JUMPERS;
 
 typedef struct{
-	AC_SYNC_STATUS 		AC_Sync;				// Состояние синхронизации по переменке
-	uint16_t			AC_Back_Timer;			// Врямя, когда синхронизация будет считаться сброшенной.
+	AC_SYNC_STATUS 		AC_Sync;				// РЎРѕСЃС‚РѕСЏРЅРёРµ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё РїРѕ РїРµСЂРµРјРµРЅРєРµ
+	uint16_t			AC_Back_Timer;			// Р’СЂСЏРјСЏ, РєРѕРіРґР° СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ Р±СѓРґРµС‚ СЃС‡РёС‚Р°С‚СЊСЃСЏ СЃР±СЂРѕС€РµРЅРЅРѕР№.
 	uint16_t			AC_freq;
 }AC_t;
 
 typedef struct{
-	AC_t				AC;						// Состояние синхронизации по переменке
-	float				TemperatureOil;			// Температура 	масла
-	float				TemperatureCoolant;		// Температура 	теплоносителя
-	OIL_TEMP_JUMPERS	OilTempJumpers;			// Джамперы задающие температуру масла
-	PHOTO_STATUS		Photosensor;			// Состояние 	фотодатчика
-	ALARM_PIN_STATUS	AlarmPin;				// Состояние пина аварии
-	MANUAL_PIN_STATUS	ManualPin;				// Состояние пина ручного запуска
-	OIL_LEVEL_STATUS	OilLevelPin;			// Состояние пина бачка с маслом
+	AC_t				AC;						// РЎРѕСЃС‚РѕСЏРЅРёРµ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё РїРѕ РїРµСЂРµРјРµРЅРєРµ
+	float				TemperatureOil;			// РўРµРјРїРµСЂР°С‚СѓСЂР° 	РјР°СЃР»Р°
+	float				TemperatureCoolant;		// РўРµРјРїРµСЂР°С‚СѓСЂР° 	С‚РµРїР»РѕРЅРѕСЃРёС‚РµР»СЏ
+	OIL_TEMP_JUMPERS	OilTempJumpers;			// Р”Р¶Р°РјРїРµСЂС‹ Р·Р°РґР°СЋС‰РёРµ С‚РµРјРїРµСЂР°С‚СѓСЂСѓ РјР°СЃР»Р°
+	PHOTO_STATUS		Photosensor;			// РЎРѕСЃС‚РѕСЏРЅРёРµ 	С„РѕС‚РѕРґР°С‚С‡РёРєР°
+	ALARM_PIN_STATUS	AlarmPin;				// РЎРѕСЃС‚РѕСЏРЅРёРµ РїРёРЅР° Р°РІР°СЂРёРё
+	MANUAL_PIN_STATUS	ManualPin;				// РЎРѕСЃС‚РѕСЏРЅРёРµ РїРёРЅР° СЂСѓС‡РЅРѕРіРѕ Р·Р°РїСѓСЃРєР°
+	OIL_LEVEL_STATUS	OilLevelPin;			// РЎРѕСЃС‚РѕСЏРЅРёРµ РїРёРЅР° Р±Р°С‡РєР° СЃ РјР°СЃР»РѕРј
 }Periph_t;
 
 extern Periph_t 	Per;
@@ -66,9 +66,9 @@ void AC_Timer(void);
 void ReadOilTempJumpers(void);
 void ReadAlarmPin(void);
 void ReadOilLevelPin(void);
-void ReadManualStartPin(void);		// Чтение пина ручного запуска
-void ReadPhotoSensor(void);			// Состояние фотодатчика
-void InitTemperatureSensors(void);	// Инициализация 	датчиков температуры
-void ReadTemperatureSensors(void);	// Чтение 			датчиков темпреатуры
+void ReadManualStartPin(void);		// Р§С‚РµРЅРёРµ РїРёРЅР° СЂСѓС‡РЅРѕРіРѕ Р·Р°РїСѓСЃРєР°
+void ReadPhotoSensor(void);			// РЎРѕСЃС‚РѕСЏРЅРёРµ С„РѕС‚РѕРґР°С‚С‡РёРєР°
+void InitTemperatureSensors(void);	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ 	РґР°С‚С‡РёРєРѕРІ С‚РµРјРїРµСЂР°С‚СѓСЂС‹
+void ReadTemperatureSensors(void);	// Р§С‚РµРЅРёРµ 			РґР°С‚С‡РёРєРѕРІ С‚РµРјРїСЂРµР°С‚СѓСЂС‹
 
 #endif

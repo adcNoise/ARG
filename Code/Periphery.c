@@ -1,20 +1,20 @@
 #include "Periphery.h"
 #include "adc.h"
 
-Periph_t 	Per;			// Периферия
+Periph_t 	Per;			// РџРµСЂРёС„РµСЂРёСЏ
 
 Max31865_t  pt100_a;	
 Max31865_t  pt100_b;
 	
 //------------------------------------------------------------------------------
-// Функция чтения джамперов температуры подогрева масла
+// Р¤СѓРЅРєС†РёСЏ С‡С‚РµРЅРёСЏ РґР¶Р°РјРїРµСЂРѕРІ С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РїРѕРґРѕРіСЂРµРІР° РјР°СЃР»Р°
 //------------------------------------------------------------------------------
 inline void AC_Timer(void){
-	if(Per.AC.AC_Back_Timer)			// Таймер автосброса
+	if(Per.AC.AC_Back_Timer)			// РўР°Р№РјРµСЂ Р°РІС‚РѕСЃР±СЂРѕСЃР°
 	{
 		Per.AC.AC_Back_Timer--;
 	}	
-	if(Per.AC.AC_Back_Timer==0)			// Если таймер дотикал до нуля то синхронизации с АС сетью нет
+	if(Per.AC.AC_Back_Timer==0)			// Р•СЃР»Рё С‚Р°Р№РјРµСЂ РґРѕС‚РёРєР°Р» РґРѕ РЅСѓР»СЏ С‚Рѕ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё СЃ РђРЎ СЃРµС‚СЊСЋ РЅРµС‚
 	{
 		Per.AC.AC_Sync = SYNC_AC_NO;
 	}
@@ -22,7 +22,7 @@ inline void AC_Timer(void){
 }
 
 //------------------------------------------------------------------------------
-// Функция чтения джамперов температуры подогрева масла
+// Р¤СѓРЅРєС†РёСЏ С‡С‚РµРЅРёСЏ РґР¶Р°РјРїРµСЂРѕРІ С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РїРѕРґРѕРіСЂРµРІР° РјР°СЃР»Р°
 //------------------------------------------------------------------------------
 inline void ReadOilTempJumpers(void){
 	Per.OilTempJumpers = 	(HAL_GPIO_ReadPin(JA_GPIO_Port, JA_Pin) 	)|
@@ -31,7 +31,7 @@ inline void ReadOilTempJumpers(void){
 }
 
 //------------------------------------------------------------------------------
-// Функция работы с пином уровня масла в бачке подогрева
+// Р¤СѓРЅРєС†РёСЏ СЂР°Р±РѕС‚С‹ СЃ РїРёРЅРѕРј СѓСЂРѕРІРЅСЏ РјР°СЃР»Р° РІ Р±Р°С‡РєРµ РїРѕРґРѕРіСЂРµРІР°
 //------------------------------------------------------------------------------
 inline void ReadOilLevelPin(void){
 	if(HAL_GPIO_ReadPin(OIL_LEVEL_IN_MCU_GPIO_Port, OIL_LEVEL_IN_MCU_Pin))
@@ -41,7 +41,7 @@ inline void ReadOilLevelPin(void){
 }
 
 //------------------------------------------------------------------------------
-// Функция работы с пином аппаратной аварии
+// Р¤СѓРЅРєС†РёСЏ СЂР°Р±РѕС‚С‹ СЃ РїРёРЅРѕРј Р°РїРїР°СЂР°С‚РЅРѕР№ Р°РІР°СЂРёРё
 //------------------------------------------------------------------------------
 inline void ReadAlarmPin(void){
 	if(HAL_GPIO_ReadPin(NALARM_GPIO_Port, NALARM_Pin))
@@ -50,17 +50,17 @@ inline void ReadAlarmPin(void){
 		Per.AlarmPin = ALARM;
 }
 //------------------------------------------------------------------------------
-// Функция работы с дискретным входом ручного запуска
+// Р¤СѓРЅРєС†РёСЏ СЂР°Р±РѕС‚С‹ СЃ РґРёСЃРєСЂРµС‚РЅС‹Рј РІС…РѕРґРѕРј СЂСѓС‡РЅРѕРіРѕ Р·Р°РїСѓСЃРєР°
 //------------------------------------------------------------------------------
 void ReadManualStartPin(void){
-	// В идеале сделать многократную проверку в течении нескольких секунд в обе стороны
+	// Р’ РёРґРµР°Р»Рµ СЃРґРµР»Р°С‚СЊ РјРЅРѕРіРѕРєСЂР°С‚РЅСѓСЋ РїСЂРѕРІРµСЂРєСѓ РІ С‚РµС‡РµРЅРёРё РЅРµСЃРєРѕР»СЊРєРёС… СЃРµРєСѓРЅРґ РІ РѕР±Рµ СЃС‚РѕСЂРѕРЅС‹
 	if(HAL_GPIO_ReadPin(MANUAL_START_MCU_GPIO_Port,MANUAL_START_MCU_Pin))
 		Per.ManualPin = MANUAL_STOP;
 	else
 		Per.ManualPin = MANUAL_START;
 }
 //------------------------------------------------------------------------------
-// Функции работы с датчиками температуры
+// Р¤СѓРЅРєС†РёРё СЂР°Р±РѕС‚С‹ СЃ РґР°С‚С‡РёРєР°РјРё С‚РµРјРїРµСЂР°С‚СѓСЂС‹
 //------------------------------------------------------------------------------
 inline void InitTemperatureSensors(void){
 	Max31865_init(&pt100_a, &hspi1, SPI1_CSA_GPIO_Port, SPI1_CSA_Pin,4,50);
@@ -73,13 +73,13 @@ inline void ReadTemperatureSensors(void){
 	if(HAL_GPIO_ReadPin(DRDY_A_GPIO_Port, DRDY_A_Pin)){
 		Max31865_readTempC(&pt100_a,&CoolantTemperature);
 
-		Per.TemperatureCoolant = Max31865_Filter(CoolantTemperature, 	CoolantTemperature,	0.1);   //  << фактор усреднения
+		Per.TemperatureCoolant = Max31865_Filter(CoolantTemperature, 	CoolantTemperature,	0.1);   //  << << С„Р°РєС‚РѕСЂ СѓСЃСЂРµРґРЅРµРЅРёСЏ 
 	}
 
 	if(HAL_GPIO_ReadPin(DRDY_B_GPIO_Port,DRDY_B_Pin)){
 		Max31865_readTempC(&pt100_b,&OilTemperature);
 
-		Per.TemperatureOil = Max31865_Filter(OilTemperature, 			Per.TemperatureOil,	0.1);   //  << фактор усреднения
+		Per.TemperatureOil = Max31865_Filter(OilTemperature, 			Per.TemperatureOil,	0.1);   //  << << С„Р°РєС‚РѕСЂ СѓСЃСЂРµРґРЅРµРЅРёСЏ 
 	}
 }
 
@@ -97,7 +97,7 @@ inline void ReadPhotoSensor(){
 
 	HAL_ADC_Stop(&hadc1);
 
-	//if(OperatingData.PhotoSensorADC==0x0FFF){ // минимальное значение АЦП, при котором будет детекция
+	//if(OperatingData.PhotoSensorADC==0x0FFF){ // РјРёРЅРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РђР¦Рџ, РїСЂРё РєРѕС‚РѕСЂРѕРј Р±СѓРґРµС‚ РґРµС‚РµРєС†РёСЏ
 	//	OperatingData.PhotoSensor = PHOTO_NO_SENSOR; return;}
 
 //	if(OperatingData.PhotoSensorADC>BurnerParameters.PhotosensorTreshold)
