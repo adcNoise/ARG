@@ -1,3 +1,4 @@
+\ARG\MDK-ARM\
 *.build_log.htm
 *.o
 *.d
